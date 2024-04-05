@@ -5,22 +5,152 @@
 {# ########################################################################### #}
 {% do LOG.debug("Entered site/common/lfric_atm/tasks_lfric_atm.cylc") %}
 
-{% if task_ns.conf_name == "nwp_gal9-C12" %}
+{# ###################################################################### #}
+{# Global NWP jobs #}
+{# ###################################################################### #}
+
+{% if task_ns.conf_name == "nwp_gal9_nomg-C12" %}
 
     {% do task_dict.update({
-        "opt_confs": ["nwp_gal9"],
+        "opt_confs": ["nwp_gal9_nomg"],
         "resolution": "C12",
         "DT": 1800,
         "tsteps": 144,
         "crun": 2,
         "crun_compare": false,
         "mpi_parts": 6,
-        "threads": 2,
         "kgo_checks": ["checksum"],
         "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
     }) %}
 
-{% elif task_ns.conf_name == "nwp_gal9-C12-short" %}
+{% elif task_ns.conf_name == "nwp_gal9-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9"],
+        "resolution": "C48_MG",
+        "DT": 1800,
+        "tsteps": 36,
+        "mpi_parts": 24,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_perf-C192_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_perf"],
+        "resolution": "C192_MG",
+        "DT": 720,
+        "tsteps": 120,
+        "mpi_parts": 864,
+        "wallclock": 10,
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9-C224_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_c224"],
+        "resolution": "C224_MG",
+        "DT": 720,
+        "tsteps": 720,
+        "mpi_parts": 1176,
+        "wallclock": 50,
+        "xios_nodes": 4,
+        "mpi_parts_xios" : 16,
+        "log_level": "info",
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9-C896_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_c896"],
+        "resolution": "C896_MG",
+        "DT": 240,
+        "tsteps": 360,
+        "mpi_parts": 4704,
+        "wallclock": 100,
+        "xios_nodes": 22,
+        "mpi_parts_xios" : 392,
+        "log_level": "info",
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_coarse_aero-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_coarse_aero"],
+        "resolution": "C48_MG",
+        "DT": 1800,
+        "tsteps": 36,
+        "mpi_parts": 24,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_da-C12" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_da"],
+        "resolution": "C12",
+        "DT": 1800,
+        "tsteps": 144,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 6,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_ls_and_jedi-C12" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_ls_and_jedi"],
+        "resolution": "C12",
+        "DT": 1800,
+        "tsteps": 14,
+        "mpi_parts": 6,
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_molw-C12" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_molw"],
+        "resolution": "C12",
+        "DT": 1800,
+        "tsteps": 144,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 6,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_debug-C12" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9_short"],
+        "resolution": "C12",
+        "DT": 1800,
+        "tsteps": 4,
+        "mpi_parts": 6,
+        "log_level": "info",
+        "kgo_checks": ["checksum"],
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_debug-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["nwp_gal9"],
+        "resolution": "C48_MG",
+        "DT": 1800,
+        "tsteps": 4,
+        "mpi_parts": 24,
+        "log_level": "info",
+        "kgo_checks": ["checksum"],
+    }) %}
+
+{% elif task_ns.conf_name == "nwp_gal9_short-C12" %}
 
     {% do task_dict.update({
         "opt_confs": ["nwp_gal9_short"],
@@ -32,6 +162,506 @@
         "kgo_checks": ["checksum"],
     }) %}
 
+{# ###################################################################### #}
+{# Global Climate jobs #}
+{# ###################################################################### #}
+
+{% elif task_ns.conf_name == "clim_gal9_nomg-C12" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["clim_gal9_nomg"],
+        "resolution": "C12",
+        "DT": 1800,
+        "tsteps": 144,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 6,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py -encorr $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "clim_gal9-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["clim_gal9"],
+        "resolution": "C48_MG",
+        "DT": 1800,
+        "tsteps": 1440,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 216,
+        "wallclock": 30,
+        "log_level": "info",
+        "plot_str": "plot_map.py -encorr $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "clim_gal9_perf-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["clim_gal9_perf"],
+        "resolution": "C48_MG",
+        "DT": 1800,
+        "tsteps": 720,
+        "mpi_parts": 216,
+        "wallclock": 20,
+    }) %}
+
+{% elif task_ns.conf_name == "clim_gal9_chem-C12" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["clim_gal9_chem"],
+        "resolution": "C12",
+        "DT": 1800,
+        "tsteps": 144,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 6,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py -encorr $NODAL_DATA_DIR/lfric_gal_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{# ###################################################################### #}
+{# Regional jobs #}
+{# ###################################################################### #}
+
+{% elif task_ns.conf_name == "ral3-seuk_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_seuk"],
+        "resolution": "seuk_MG",
+        "DT": 60,
+        "tsteps": 120,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 16,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py -ral $NODAL_DATA_DIR/lfric_ral_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "ral3-uk_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_uk"],
+        "resolution": "uk_MG",
+        "DT": 60,
+        "tsteps": 360,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 729,
+        "wallclock": 25,
+        "xios_nodes": 5,
+        "mpi_parts_xios" : 81,
+        "log_level": "info",
+        "plot_str": "plot_map.py -ral $NODAL_DATA_DIR/lfric_ral_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "ral3-comp_perf_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_uk_perf"],
+        "resolution": "comp_perf_MG",
+        "DT": 60,
+        "tsteps": 360,
+        "mpi_parts": 2048,
+        "wallclock": 35,
+        "xios_nodes": 16,
+        "mpi_parts_xios" : 288,
+    }) %}
+
+{% elif task_ns.conf_name == "ral3_short-comp_perf_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_uk_short"],
+        "resolution": "comp_perf_MG",
+        "DT": 60,
+        "tsteps": 360,
+        "mpi_parts": 2048,
+        "wallclock": 35,
+        "xios_nodes": 16,
+        "mpi_parts_xios" : 288,
+    }) %}
+
+{% elif task_ns.conf_name == "ral3-ukv_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_ukv"],
+        "resolution": "ukv_MG",
+        "DT": 60,
+        "tsteps": 360,
+        "mpi_parts": 2560,
+        "wallclock": 50,
+        "xios_nodes": 20,
+        "mpi_parts_xios" : 365,
+        "log_level": "info",
+        "plot_str": "plot_map.py -ral $NODAL_DATA_DIR/lfric_ral_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "ral3_ens-seuk_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_ens_seuk"],
+        "resolution": "seuk_MG",
+        "DT": 60,
+        "tsteps": 120,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 16,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py -ral $NODAL_DATA_DIR/lfric_ral_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "ral3_mixmol-seuk_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_mixmol_seuk"],
+        "resolution": "seuk_MG",
+        "DT": 60,
+        "tsteps": 120,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 16,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py -ral $NODAL_DATA_DIR/lfric_ral_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "ral3_mixmol-uk_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["ral3_mixmol_uk"],
+        "resolution": "uk_MG",
+        "DT": 60,
+        "tsteps": 360,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 729,
+        "wallclock": 25,
+        "xios_nodes": 5,
+        "mpi_parts_xios" : 81,
+        "log_level": "info",
+        "plot_str": "plot_map.py -ral $NODAL_DATA_DIR/lfric_ral_diagnostics.nc  $PLOT_DIR",
+    }) %}
+
+{# ###################################################################### #}
+{# Idealised jobs #}
+{# ###################################################################### #}
+
+{% elif task_ns.conf_name == "rce_test-BiP64x64-1500x1500_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["rce_test"],
+        "resolution": "BiP64x64-1500x1500_MG",
+        "DT": 60,
+        "tsteps": 120,
+        "mpi_parts": 16,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_rce.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "rce-BiP64x64-100x100_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["rce"],
+        "resolution": "BiP64x64-100x100_MG",
+        "DT": 5,
+        "tsteps": 3600,
+        "mpi_parts": 64,
+        "wallclock": 25,
+        "log_level": "info",
+        "plot_str": "plot_rce.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "cbl-BiP64x64-100x100_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["cbl"],
+        "resolution": "BiP64x64-100x100_MG",
+        "DT": 5,
+        "tsteps": 3600,
+        "mpi_parts": 64,
+        "wallclock": 20,
+        "log_level": "info",
+        "plot_str": "profile_plot.py $NODAL_DATA_DIR/lfric_diag.nc theta:u_in_w3:v_in_w3:w_in_wth umL70 70 40  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "aquaplanet-C12" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["aquaplanet"],
+        "resolution": "C12",
+        "DT": 1800,
+        "tsteps": 24,
+        "crun": 2,
+        "crun_compare": false,
+        "mpi_parts": 6,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "thai_ben1-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["thai_ben1"],
+        "resolution": "C48_MG",
+        "DT": 1200,
+        "tsteps": 72,
+        "mpi_parts": 24,
+        "kgo_checks": ["checksum"],
+        "log_level": "info",
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "thai_ben2-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["thai_ben2"],
+        "resolution": "C48_MG",
+        "DT": 1200,
+        "tsteps": 72,
+        "mpi_parts": 24,
+        "log_level": "info",
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "thai_hab1-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["thai_hab1"],
+        "resolution": "C48_MG",
+        "DT": 1200,
+        "tsteps": 72,
+        "mpi_parts": 24,
+        "log_level": "info",
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "thai_hab2-C48_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["thai_hab2"],
+        "resolution": "C48_MG",
+        "DT": 1200,
+        "tsteps": 72,
+        "mpi_parts": 24,
+        "log_level": "info",
+        "plot_str": "plot_map.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{# ###################################################################### #}
+{# Single column jobs #}
+{# ###################################################################### #}
+
+{% elif task_ns.conf_name == "scm_gal9_bomex-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_bomex"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 1200,
+        "tsteps": 72,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_cbl-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_cbl"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 600,
+        "tsteps": 48,
+        "wallclock": 5,
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_cbl_dry-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_cbl_dry"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 600,
+        "tsteps": 48,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_comp_tran_ref-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_comp_tran_ref"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 1200,
+        "tsteps": 216,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_constrain-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_constrain"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 900,
+        "tsteps": 56,
+        "wallclock": 5,
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_dice2-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_dice2"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 600,
+        "tsteps": 432,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_gabls4-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_gabls4"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 60,
+        "tsteps": 2160,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_sahara-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_sahara"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 900,
+        "tsteps": 36,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_seaice-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_seaice"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 900,
+        "tsteps": 56,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_snow-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_snow"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 600,
+        "tsteps": 432,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_gal9_toga-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_gal9_toga"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 1200,
+        "tsteps": 1368,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_llcs-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_llcs"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 1200,
+        "tsteps": 48,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_rad_gas-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_rad_gas"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 3600,
+        "tsteps": 288,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_ral3_comp_tran_ref-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_ral3_comp_tran_ref"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 1200,
+        "tsteps": 216,
+        "wallclock": 5,
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_ral3_constrain-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_ral3_constrain"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 900,
+        "tsteps": 56,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_ral3_dice2-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_ral3_dice2"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 600,
+        "tsteps": 432,
+        "wallclock": 5,
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_ral3_moruses-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_ral3_moruses"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 600,
+        "tsteps": 432,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_ral3_urban2t-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_ral3_urban2t"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 600,
+        "tsteps": 432,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
 {% elif task_ns.conf_name == "scm_ukca_land-BiP2x2-50000x50000" %}
 
     {% do task_dict.update({
@@ -40,8 +670,29 @@
         "DT": 600,
         "tsteps": 432,
         "crun": 2,
+        "wallclock": 5,
         "kgo_checks": ["checksum"],
         "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "scm_ukca_sea-BiP2x2-50000x50000" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["scm_ukca_sea"],
+        "resolution": "BiP2x2-50000x50000",
+        "DT": 1200,
+        "tsteps": 432,
+        "crun": 2,
+        "wallclock": 5,
+        "kgo_checks": ["checksum"],
+        "plot_str": "plot_scm.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
+    }) %}
+
+{% elif task_ns.conf_name == "canned" %}
+
+    {% do task_dict.update({
+        "app_name": "canned_test",
+        "kgo_checks": [],
     }) %}
 
 {% elif task.startswith("build") %}

@@ -24,7 +24,7 @@
         "gungho_model_baroclinic-C24_MG_gadi_intel_fast-debug-64bit",
     ],
     "lfric_atm": [
-        "lfric_atm_nwp_gal9-C12_gadi_intel_fast-debug-64bit",
+        "lfric_atm_nwp_gal9_nomg-C12_gadi_intel_fast-debug-64bit",
     ],
     }) %}
 

@@ -91,7 +91,7 @@
             TASK_OUTPUT_DIR       = {{task_output_dir}}
             APP_NAME              = {{task_ns.application}}
             LOG_LEVEL             = {{task_values["log_level"]}}
-            RESOLUTION            = {{task_values["resolution"]}}
+            RESOLUTION            = {{task_values["resolution"]|replace("_MG","")}}
             DT                    = {{task_values["DT"]}}
             USE_XIOS_IO           = {{task_values["use_xios_io"]}}
             NODAL_OUTPUT_ON_W3    = {{task_values["nodal_output_on_w3"]}}

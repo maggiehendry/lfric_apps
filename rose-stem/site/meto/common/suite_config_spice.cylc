@@ -50,7 +50,7 @@
         [[[directives]]]
             --time=00:10:00
             --partition=rhel7
-            --mem=6G
+            --mem-per-cpu=4G
             --export=NONE
 
     [[SPICE_INTEL]]
