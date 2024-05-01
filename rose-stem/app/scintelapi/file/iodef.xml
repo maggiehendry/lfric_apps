@@ -29,6 +29,10 @@
       <domain domain_ref="edge"/>
       <axis axis_ref="vert_axis_half_levels"/>
     </grid>
+    <grid id="soil_levels_face_grid">
+      <domain domain_ref="face"/>
+      <axis axis_ref="soil_levels"/>
+    </grid>
    </grid_definition>
 
    <file_definition
@@ -47,8 +51,8 @@
        <field id="write_mcl_in_wtheta" name="mcl_in_wtheta" long_name="cloud_liquid_water_mixing_ratio"  unit="1" grid_ref="full_level_face_grid" operation="once" prec="8" />
        <field id="write_mcf_in_wtheta" name="mcf_in_wtheta" long_name="cloud_ice_mixing_ratio"  unit="1" grid_ref="full_level_face_grid" operation="once" prec="8" />
        <field id="write_tstar" name="tstar" long_name="surface_temperature" standard_name="surface_temperature" unit="K" domain_ref="face" operation="once" prec="8" />
-       <field id="write_soil_moisture_content" name="soil_moisture_content" long_name="Soil moisture content" unit="kg m-2" domain_ref="face" axis_ref="soil_levels" operation="once" prec="8" />
-       <field id="write_soil_moisture_stress" name="soil_moisture_stress" long_name="Soil moisture stress" unit="1" domain_ref="face" axis_ref="soil_levels" operation="once" prec="8" />
+       <field id="write_soil_moisture_content" name="soil_moisture_content" long_name="Soil moisture content" unit="kg m-2" grid_ref="soil_levels_face_grid" operation="once" prec="8" />
+       <field id="write_soil_moisture_stress" name="soil_moisture_stress" long_name="Soil moisture stress" unit="1" grid_ref="soil_levels_face_grid" operation="once" prec="8" />
       </file>
 
       <!-- File definition for lfric checkpoint read -->

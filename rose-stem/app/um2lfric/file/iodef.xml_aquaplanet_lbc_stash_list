@@ -10,7 +10,7 @@
       <axis id="vert_axis_full_levels" name="full_levels"/>
       <axis id="radiation_levels" name="radiation_levels"/>
       <axis id="soil_levels" name="soil_levels" n_glo="4"/>
-      <axis id="surface_tiles" name="surface_tiles" n_glo="9"/>
+      <axis id="land_tiles" name="land_tiles" n_glo="9"/>
       <axis id="snow_layers_and_tiles" name="snow_layers_and_tiles" n_glo="27"/>
     </axis_definition>
 
@@ -30,7 +30,19 @@
       <grid id="half_level_edge_grid">
         <domain domain_ref="edge"/>
         <axis axis_ref="vert_axis_half_levels"/>
-      </grid>	  
+      </grid>
+      <grid id="soil_levels_face_grid">
+        <domain domain_ref="face"/>
+        <axis axis_ref="soil_levels"/>
+      </grid>
+      <grid id="land_tiles_face_grid">
+        <domain domain_ref="face"/>
+        <axis axis_ref="land_tiles"/>
+      </grid>
+      <grid id="snow_layers_face_grid">
+        <domain domain_ref="face"/>
+        <axis axis_ref="snow_layers_and_tiles"/>
+      </grid>
     </grid_definition>
 
     <field_definition prec="8" >
