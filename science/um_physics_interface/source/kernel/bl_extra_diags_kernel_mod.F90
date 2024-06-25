@@ -150,6 +150,7 @@ contains
 
     use aerosol_config_mod,   only : murk_visibility
     use beta_precip_mod,      only : beta_precip
+    use blayer_config_mod,    only : c_gust
     use cloud_inputs_mod,     only : rhcrit
     use dewpnt_mod,           only : dewpnt
     use fog_fr_mod,           only : fog_fr
@@ -209,7 +210,6 @@ contains
     real(kind=r_def), parameter :: one_quarter = 1.0_r_def/4.0_r_def
 
     ! Tunable parameters used in the calculation of the wind gust
-    real(kind=r_def), parameter :: c_ugn       = 4.0_r_def
     real(kind=r_def), parameter :: c_ws        = 1.0_r_def/24.0_r_def
     real(kind=r_def), parameter :: gust_const  = 2.29_r_def
 
@@ -266,7 +266,7 @@ contains
         std_dev = gust_const * ustar_implicit(map_2d(1))
       end if
       gust_contribution = std_dev * (1.0_r_def/vkman) *                      &
-              LOG( (5.0_r_def * EXP(vkman * c_ugn) + z0m_eff(map_2d(1)) ) /  &
+              LOG( (5.0_r_def * EXP(vkman * c_gust) + z0m_eff(map_2d(1)) ) / &
                    (5.0_r_def + z0m_eff(map_2d(1)) ) )
 
       if ( .not. associated(wind_gust, empty_real_data) ) then
