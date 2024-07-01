@@ -296,6 +296,7 @@ contains
                                         l_water_industry, l_water_irrigation,  &
                                         l_water_livestock, l_water_resources,  &
                                         l_water_transfers, nwater_use
+    use jules_water_tracers_mod,  only: l_wtrac_jls, n_wtrac_jls, n_evap_srce
     use veg3_parm_mod,            only: l_veg3
 
     use crop_vars_mod,            only: crop_vars_type, crop_vars_data_type,   &
@@ -357,6 +358,9 @@ contains
                                         water_resources_assoc,                 &
                                         water_resources_nullify,               &
                                         water_resources_dealloc
+    use jules_wtrac_type_mod,     only: jls_wtrac_type, jls_wtrac_data_type,   &
+                                        wtrac_jls_assoc, wtrac_jls_alloc,      &
+                                        wtrac_jls_nullify, wtrac_jls_dealloc
     use coastal,                  only: coastal_type
 
     use nlsizes_namelist_mod, only: sm_levels, ntiles, bl_levels
@@ -549,6 +553,8 @@ contains
     type(chemvars_data_type) :: chemvars_data
     type(water_resources_type) :: water_resources
     type(water_resources_data_type) :: water_resources_data
+    type(jls_wtrac_type)       :: wtrac_jls
+    type(jls_wtrac_data_type)  :: wtrac_jls_data
     type( coastal_type ) :: coast
     integer(i_um) :: ndry_dep_species  ! Dummy variable for now
 
@@ -665,6 +671,12 @@ contains
                                l_water_livestock, l_water_resources,          &
                                l_water_transfers, water_resources_data)
     call water_resources_assoc(water_resources,water_resources_data)
+
+    call wtrac_jls_alloc(land_pts, t_i_length, t_j_length, nsurft, nsoilt,     &
+                         sm_levels, nsmax, nice_use, n_wtrac_jls, n_evap_srce, &
+                         river_row_length, river_rows, l_wtrac_jls,            &
+                         wtrac_jls_data)
+    call wtrac_jls_assoc(wtrac_jls, wtrac_jls_data)
 
     !-------------------------------------------------------------------
     l = 0
@@ -956,6 +968,7 @@ contains
     forcing,                                                                  &
     rivers,                                                                   &
     chemvars, water_resources,                                                &
+    wtrac_jls,                                                                &
     work_vars_cbl                                                             &
     )
 
@@ -1121,6 +1134,9 @@ contains
 
     call water_resources_nullify(water_resources)
     call water_resources_dealloc(water_resources_data)
+
+    call wtrac_jls_nullify(wtrac_jls)
+    call wtrac_jls_dealloc(wtrac_jls_data)
 
   end subroutine jules_extra_code
 

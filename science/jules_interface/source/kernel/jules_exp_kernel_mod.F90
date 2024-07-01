@@ -468,6 +468,7 @@ contains
     use jules_urban_mod, only: l_moruses
     use jules_vegetation_mod, only: l_crop, l_triffid, l_phenol, l_use_pft_psi,&
          can_rad_mod, l_acclim, l_sugar
+    use jules_water_tracers_mod, only: l_wtrac_jls, n_wtrac_jls, n_evap_srce
     use nlsizes_namelist_mod, only: sm_levels, ntiles, bl_levels
     use planet_constants_mod, only: p_zero, kappa, planet_radius, cp, g, grcp, &
          c_virtual, repsilon, r, lcrcp, lsrcp, vkman
@@ -534,6 +535,9 @@ contains
     use jules_chemvars_mod,       only: chemvars_type, chemvars_data_type,     &
                                         chemvars_alloc, chemvars_assoc,        &
                                         chemvars_dealloc, chemvars_nullify
+    use jules_wtrac_type_mod,     only: jls_wtrac_type, jls_wtrac_data_type,   &
+                                        wtrac_jls_alloc, wtrac_jls_assoc,      &
+                                        wtrac_jls_dealloc, wtrac_jls_nullify
     use progs_cbl_vars_mod, only: progs_cbl_vars_type
     use work_vars_mod_cbl, only: work_vars_type
 
@@ -763,7 +767,8 @@ contains
     ! Fields which are not used and only required for subroutine argument list,
     ! hence are unset in the kernel
     ! if they become set, please move up to be with other variables
-    integer(i_um) :: asteps_since_triffid, ndry_dep_species
+    integer(i_um) :: asteps_since_triffid, ndry_dep_species,                   &
+                     river_row_length_dum, river_rows_dum
 
     real(r_um), dimension(seg_len,1,1) ::                                      &
          bt, bq, bt_cld, bq_cld, a_qs, a_dqsdt, dqsdt
@@ -805,6 +810,8 @@ contains
     type(fluxes_data_type) :: fluxes_data
     type(chemvars_type) :: chemvars
     type(chemvars_data_type) :: chemvars_data
+    type(jls_wtrac_type) :: wtrac_jls
+    type(jls_wtrac_data_type) :: wtrac_jls_data
     type(jules_vars_type) :: jules_vars
     type(jules_vars_data_type), TARGET :: jules_vars_data
     ! Unused types needed for argument list
@@ -885,6 +892,16 @@ contains
     call chemvars_alloc(land_field, seg_len, 1, npft, ntype,                   &
                         l_deposition, ndry_dep_species, chemvars_data)
     call chemvars_assoc(chemvars, chemvars_data)
+
+    ! Set river size to 1 here as the fields with these dimensions are not
+    ! used here
+    river_row_length_dum = 1
+    river_rows_dum = 1
+    call wtrac_jls_alloc(land_field, seg_len, 1, n_land_tile, nsoilt,          &
+                         sm_levels, nsmax, nice_use, n_wtrac_jls, n_evap_srce, &
+                         river_row_length_dum, river_rows_dum, l_wtrac_jls,    &
+                         wtrac_jls_data)
+    call wtrac_jls_assoc(wtrac_jls, wtrac_jls_data)
 
     ! Note, jules_vars needs setting up after the change to pdims_s below so is
     ! not with the rest of these allocations.
@@ -1451,8 +1468,8 @@ contains
       vshr, resp_s_tot_soilt, emis_soil,                                       &
       !TYPES containing field data (IN OUT)
       crop_vars,psparms,ainfo,trif_vars,aerotype,urban_param,progs,trifctltype,&
-      coast, jules_vars, fluxes, lake_vars, forcing, chemvars, progs_cbl_vars, &
-      work_cbl &
+      coast, jules_vars, fluxes, lake_vars, forcing, chemvars, wtrac_jls,      &
+      progs_cbl_vars, work_cbl                                                 &
       )
 
     if (flux_bc_opt > interactive_fluxes) then
@@ -1884,6 +1901,9 @@ contains
 
     call chemvars_nullify(chemvars)
     call chemvars_dealloc(chemvars_data)
+
+    call wtrac_jls_nullify(wtrac_jls)
+    call wtrac_jls_dealloc(wtrac_jls_data)
 
   end subroutine jules_exp_code
 

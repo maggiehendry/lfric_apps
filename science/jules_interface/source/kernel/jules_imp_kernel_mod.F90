@@ -328,6 +328,7 @@ contains
     use carbon_options_mod, only: l_co2_interactive
     use csigma, only: sbcon
     use dust_parameters_mod, only: ndiv, ndivh
+    use free_tracers_inputs_mod, only: l_wtrac
     use gen_phys_inputs_mod, only: l_mr_physics
     use jules_deposition_mod, only: l_deposition
     use jules_irrig_mod, only: irr_crop, irr_crop_doell
@@ -342,6 +343,7 @@ contains
     use jules_soil_mod, only: ns_deep, l_bedrock
     use jules_soil_biogeochem_mod, only: dim_ch4layer, soil_bgc_model,         &
                                          soil_model_ecosse, l_layeredc
+    use jules_water_tracers_mod, only: l_wtrac_jls, n_wtrac_jls, n_evap_srce
     use nlsizes_namelist_mod, only: sm_levels, ntiles, bl_levels
     use planet_constants_mod, only: p_zero, kappa, planet_radius, two_omega
     use rad_input_mod, only: co2_mmr
@@ -387,6 +389,9 @@ contains
     use fluxes_mod,               only: fluxes_type, fluxes_data_type,         &
                                         fluxes_alloc, fluxes_assoc,            &
                                         fluxes_nullify, fluxes_dealloc
+    use jules_wtrac_type_mod,     only: jls_wtrac_type, jls_wtrac_data_type,   &
+                                        wtrac_jls_assoc, wtrac_jls_alloc,      &
+                                        wtrac_jls_nullify, wtrac_jls_dealloc
     use trifctl,                  only: trifctl_type
     ! In general CABLE utilizes a required subset of tbe JULES types, however;
     use progs_cbl_vars_mod, only: progs_cbl_vars_type ! CABLE requires extra progs
@@ -502,9 +507,15 @@ contains
     integer(i_def) :: i, i_tile, i_sice, n, l, m, land_field, ssi_pts,       &
                       sice_pts, sea_pts
 
+    ! Fields which are not used and only required for subroutine argument list,
+    ! hence are unset in the kernel
+    integer(i_um) :: river_row_length_dum, river_rows_dum
+
     ! local switches and scalars
     integer(i_um) :: error_code
     logical :: l_correct
+    logical :: l_wtrac_bl
+
     real(r_def) :: sw_diffuse_blue_surf
 
     ! profile fields from level 1 upwards
@@ -578,6 +589,8 @@ contains
     type(forcing_data_type)    :: forcing_data
     type(fluxes_type)          :: fluxes
     type(fluxes_data_type)     :: fluxes_data
+    type(jls_wtrac_type)       :: wtrac_jls
+    type(jls_wtrac_data_type)  :: wtrac_jls_data
     !CABLE TYPES containing field data (IN OUT)
     type(progs_cbl_vars_type) :: progs_cbl_vars
     type(work_vars_type)      :: work_cbl
@@ -644,6 +657,17 @@ contains
                       nice, nice_use,                                         &
                       fluxes_data)
     call fluxes_assoc(fluxes, fluxes_data)
+
+    ! Set river size to 1 here as the fields with these dimensions are not
+    ! used here
+    river_row_length_dum = 1
+    river_rows_dum = 1
+    call wtrac_jls_alloc(land_field, seg_len, 1, n_land_tile, nsoilt,          &
+                         sm_levels, nsmax, nice_use, n_wtrac_jls, n_evap_srce, &
+                         river_row_length_dum, river_rows_dum, l_wtrac_jls,    &
+                         wtrac_jls_data)
+    call wtrac_jls_assoc(wtrac_jls, wtrac_jls_data)
+
     !-----------------------------------------------------------------------
     ! Initialisation of variables and arrays
     !-----------------------------------------------------------------------
@@ -1089,6 +1113,9 @@ contains
       l_correct = .true.
     end if
 
+    ! Water tracers are only updated on final loop
+    l_wtrac_bl = (l_wtrac .AND. outer == outer_iterations)
+
     r_gamma=alpha_cd(1)
     if (flux_bc_opt > interactive_fluxes) then
       ! explicit scalar surface fluxes means surface evaporation, snow melt,
@@ -1125,6 +1152,8 @@ contains
          flandg,                                                             &
          ! Coastal OUT - do this here as needs to be OUT
          tstar_land, tstar_sice,                                             &
+         ! Water tracer switch (IN)
+         l_wtrac_bl,                                                         &
          !JULES switches module
          !IN
          l_co2_interactive, l_mr_physics, co2,                               &
@@ -1138,7 +1167,7 @@ contains
          rhokh_mix, ti_sice, sky,                                            &
          !TYPES containing field data (IN OUT)
          crop_vars,ainfo, aerotype, progs, coast, jules_vars,                &
-         fluxes, lake_vars, forcing, progs_cbl_vars, work_cbl                &
+         fluxes, lake_vars, forcing, wtrac_jls, progs_cbl_vars, work_cbl     &
          )
 
     do i = 1, seg_len
@@ -1543,6 +1572,9 @@ contains
 
     call fluxes_nullify(fluxes)
     call fluxes_dealloc(fluxes_data)
+
+    call wtrac_jls_nullify(wtrac_jls)
+    call wtrac_jls_dealloc(wtrac_jls_data)
 
   end subroutine jules_imp_code
 
