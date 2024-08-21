@@ -6,6 +6,7 @@
         "gungho",
         "gungho_model",
         "lfric_atm",
+        "ngarch",
     ],
     "scripts": [
         "config_dump_checker",
@@ -27,6 +28,9 @@
         "lfric_atm_nwp_gal9_coarse_aero-C48_MG_xc50_intel_fast-debug-64bit",
         "lfric_atm_nwp_gal9_ls_and_jedi-C12_xc50_intel_fast-debug-64bit",
         "lfric_atm_scm_gal9_comp_tran_ref-BiP2x2-50000x50000_xc50_intel_fast-debug-64bit",
+    ],
+    "ngarch": [
+        "ngarch_default-C24_xc50_intel_fast-debug-64bit",
     ],
     }) %}
 

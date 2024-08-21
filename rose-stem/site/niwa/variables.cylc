@@ -2,6 +2,7 @@
 
 {% do site_vars.update({"known_applications": ["gungho_model",
                                                "lfric_atm",
+                                               "ngarch",
                                                "mesh",
                                                "gungho",
                                                "socrates",
