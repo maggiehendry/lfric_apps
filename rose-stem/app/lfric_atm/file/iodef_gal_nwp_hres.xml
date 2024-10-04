@@ -15,7 +15,7 @@
 
     <!-- Include domain definitions -->
     <domain_definition src="$METADATA/domain_def_main.xml"/>
-    
+
     <!-- Include grid definitions -->
     <grid_definition src="$METADATA/grid_def_main.xml"/>
     <grid_definition src="$METADATA/grid_def_aero_coarse.xml"/>
