@@ -9,9 +9,10 @@ module tracer_collection_transport_mod
 
   use constants_mod,                  only: r_def, i_def, r_tran
   use field_mod,                      only: field_type
+  use field_parent_mod,               only: field_parent_type
   use r_tran_field_mod,               only: r_tran_field_type
   use field_collection_mod,           only: field_collection_type
-  use field_collection_iterator_mod,  only: field_collection_real_iterator_type
+  use field_collection_iterator_mod,  only: field_collection_iterator_type
   use function_space_mod,             only: function_space_type
   use function_space_collection_mod,  only: function_space_collection
   use io_config_mod,                  only: subroutine_timers
@@ -69,13 +70,14 @@ contains
     type(transport_metadata_type), intent(in)    :: transport_metadata
 
     ! Iterator for field collection
-    type(field_collection_real_iterator_type) :: iterator
+    type(field_collection_iterator_type) :: iterator
 
     ! One of the single fields out of the fields_out collection
-    type(field_type), pointer :: single_field_out => null()
+    type(field_type), pointer :: single_field_out
 
     ! The saved version of field after slow physics
-    type(field_type), pointer :: single_field_in => null()
+    class( field_parent_type ), pointer :: abstract_field_ptr
+    type(field_type), pointer :: single_field_in
 
     ! Transport runtime and form of transport equation
     type(transport_runtime_type), pointer :: transport_runtime
@@ -90,7 +92,11 @@ contains
         do
           if ( .not. iterator%has_next() ) exit
 
-          single_field_in => iterator%next()
+          abstract_field_ptr => iterator%next()
+          select type(abstract_field_ptr)
+          type is (field_type)
+            single_field_in => abstract_field_ptr
+          end select
           call fields_out%get_field( trim(single_field_in%get_name() ), &
                                      single_field_out )
 
@@ -183,17 +189,18 @@ contains
     type(transport_metadata_type), intent(in)    :: transport_metadata
 
     ! Iterator for field collection
-    type(field_collection_real_iterator_type) :: iterator
+    type(field_collection_iterator_type) :: iterator
 
     ! One of the single fields out of the fields_out collection
-    type(field_type), pointer :: single_field_out => null()
+    class( field_parent_type ), pointer :: abstract_field_ptr
+    type(field_type), pointer :: single_field_out
 
     ! The saved version of field after slow physics
-    type(field_type), pointer :: single_field_in => null()
+    type(field_type), pointer :: single_field_in
 
     ! Coarse mesh objects
-    type(mesh_type),           pointer :: coarse_mesh => null()
-    type(function_space_type), pointer :: coarse_fs => null()
+    type(mesh_type),           pointer :: coarse_mesh
+    type(function_space_type), pointer :: coarse_fs
     type(field_type)                   :: coarse_field_in, coarse_field_out
 
     ! Transport runtime and form of transport equation
@@ -210,7 +217,11 @@ contains
       do
         if ( .not. iterator%has_next() ) exit
 
-        single_field_in => iterator%next()
+        abstract_field_ptr => iterator%next()
+        select type(abstract_field_ptr)
+        type is (field_type)
+          single_field_in => abstract_field_ptr
+        end select
         call fields_out%get_field( trim(single_field_in%get_name() ), &
                                    single_field_out )
         call log_event( "Advecting "//  trim(single_field_in%get_name()), &

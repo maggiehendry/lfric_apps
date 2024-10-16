@@ -74,6 +74,7 @@ module semi_implicit_timestep_alg_mod
   ! Derived Types
   use field_array_mod,            only: field_array_type
   use field_mod,                  only: field_type
+  use field_parent_mod,           only: field_parent_type
   use field_collection_mod,       only: field_collection_type
   use io_value_mod,               only: io_value_type, &
                                         get_io_value
@@ -1133,7 +1134,7 @@ contains
                                          field_list)
 
     use field_collection_mod,          only: field_collection_type
-    use field_collection_iterator_mod, only: field_collection_real_iterator_type
+    use field_collection_iterator_mod, only: field_collection_iterator_type
 
     implicit none
 
@@ -1142,9 +1143,10 @@ contains
     type(field_collection_type), intent(in)  :: field_list
 
     ! Iterator for field collection
-    type(field_collection_real_iterator_type) :: iterator
+    type(field_collection_iterator_type) :: iterator
 
     ! One of the single fields out of the generic_fields_to_copy collection
+    class( field_parent_type ), pointer :: abstract_field_ptr
     type(field_type), pointer :: single_generic_field
 
     ! The saved version of single_generic_field
@@ -1152,6 +1154,7 @@ contains
 
     logical(kind=l_def) :: l_copy
 
+    nullify(abstract_field_ptr)
     nullify(single_generic_field)
 
     call generic_fields_copied%initialise(name='fields_copied')
@@ -1163,7 +1166,11 @@ contains
       do
         if ( .not.iterator%has_next() ) exit
 
-        single_generic_field => iterator%next()
+        abstract_field_ptr => iterator%next()
+        select type(abstract_field_ptr)
+        type is (field_type)
+          single_generic_field => abstract_field_ptr
+        end select
 
         l_copy = field_list%field_exists(single_generic_field%get_name())
 
