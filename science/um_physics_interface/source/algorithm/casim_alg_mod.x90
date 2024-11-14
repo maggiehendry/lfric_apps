@@ -174,7 +174,8 @@ contains
     call initialise_diags_for_casim( refl_tot, refl_1km, superc_liq,           &
                                      superc_rain, ls_graup_3d )
 
-    call invoke( casim_kernel_type ( mr_n(imr_v), mr_n(imr_cl), mr_n(imr_ci),  &
+    call invoke(name = "invoke_casim_kernel_type",                             &
+                 casim_kernel_type ( mr_n(imr_v), mr_n(imr_cl), mr_n(imr_ci),  &
                                      mr_n(imr_r), mr_n(imr_g), mr_n(imr_s),    &
                                      cfl_in, cff_in,                           &
                                      nl_mphys, nr_mphys,                       &

@@ -409,6 +409,17 @@
         "plot_str": "plot_rce.py $NODAL_DATA_DIR/lfric_diag.nc  $PLOT_DIR",
     }) %}
 
+{% elif task_ns.conf_name == "rce_test_threaded-BiP64x64-1500x1500_MG" %}
+
+    {% do task_dict.update({
+        "opt_confs": ["rce_test"],
+        "resolution": "BiP64x64-1500x1500_MG",
+        "DT": 60,
+        "tsteps": 120,
+        "mpi_parts": 16,
+        "threads": 2,
+    }) %}
+
 {% elif task_ns.conf_name == "cbl-BiP64x64-100x100_MG" %}
 
     {% do task_dict.update({

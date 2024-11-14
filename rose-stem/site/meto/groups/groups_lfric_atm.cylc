@@ -175,6 +175,9 @@
         "lfric_atm_clim_gal9-C48_MG_xc40_intel_production-64bit-rbl32",
         "lfric_atm_ral_xc40_weekly",
     ],
+    "lfric_atm_xc40_threaded": [
+        "lfric_atm_rce_test_threaded-BiP64x64-1500x1500_MG_xc40_intel_fast-debug-64bit",
+    ],
     "lfric_atm_xc40": [
         "lfric_atm_xc40_developer",
         "lfric_atm_xc40_extra",
