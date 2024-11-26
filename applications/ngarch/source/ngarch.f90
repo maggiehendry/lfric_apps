@@ -5,8 +5,7 @@
 !-----------------------------------------------------------------------------
 !> @page Miniapp ngarch program
 !> @brief Main program used to test physics schemes for NGARCH
-!> @details Calls init and final from gungho with a simplified step from the
-!>          ngarch_driver_mod
+!> @details Runs a GungHo model with a custom step method
 program ngarch
 
   use cli_mod,                     only : get_initial_filename
@@ -22,9 +21,9 @@ program ngarch
                                           log_scratch_space
   use mpi_mod,                     only : global_mpi
 
-  use ngarch_mod,        only : ngarch_required_namelists
-  use ngarch_driver_mod, only : step
-  use gungho_driver_mod, only : initialise, finalise
+  use ngarch_mod,            only : ngarch_required_namelists
+  use gungho_driver_mod,     only : initialise, finalise, step
+  use override_timestep_mod, only : override_timestep
 
   implicit none
 
@@ -50,7 +49,7 @@ program ngarch
   modeldb%mpi => global_mpi
   call init_comm( application_name, modeldb )
   call get_initial_filename( filename )
-  call init_config( filename,                            &
+  call init_config( filename,                  &
                     ngarch_required_namelists, &
                     modeldb%configuration )
   deallocate( filename )
@@ -62,8 +61,10 @@ program ngarch
   call log_event( 'Initialising ' // application_name // ' ...', log_level_trace )
   call initialise( application_name, modeldb )
 
-  do while (modeldb%clock%tick())
-    call step( application_name, modeldb )
+  call override_timestep( modeldb )
+
+  do while ( modeldb%clock%tick() )
+    call step( modeldb )
   end do
 
   call log_event( 'Finalising ' // application_name // ' ...', log_level_trace )

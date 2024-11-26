@@ -367,6 +367,9 @@ smagorinsky=.false.,
 viscosity=.false.,
 viscosity_mu=0.0,
 /
+&ngarch
+method='casim',
+/
 &esm_couple
 l_esm_couple_test=.false.,
 /
