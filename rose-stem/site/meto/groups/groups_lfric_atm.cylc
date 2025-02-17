@@ -211,6 +211,7 @@
         "lfric_atm_nwp_gal9_debug-C48_MG_xc40_intel_full-debug-64bit",
         "lfric_atm_nwp_casim-C12_xc40_intel_fast-debug-64bit",
         "lfric_atm_nwp_coma9-C12_xc40_intel_fast-debug-64bit",
+        "lfric_atm_nwp_comorph_tb-C12_xc40_intel_fast-debug-64bit",
         "lfric_atm_nwp_comorph_dev-C12_xc40_intel_fast-debug-64bit",
     ],
     "lfric_atm_nwp_xc40": [
@@ -340,6 +341,7 @@
         "lfric_atm_nwp_gal9_debug-C48_MG_ex1a_gnu_full-debug-64bit",
         "lfric_atm_nwp_casim-C12_ex1a_cce_fast-debug-64bit",
         "lfric_atm_nwp_coma9-C12_ex1a_cce_fast-debug-64bit",
+        "lfric_atm_nwp_comorph_tb-C12_ex1a_cce_fast-debug-64bit",
         "lfric_atm_nwp_comorph_dev-C12_ex1a_cce_fast-debug-64bit",
     ],
     "lfric_atm_nwp_ex1a": [

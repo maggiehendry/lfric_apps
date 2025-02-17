@@ -33,7 +33,7 @@ module conv_comorph_kernel_mod
   !>
   type, public, extends(kernel_type) :: conv_comorph_kernel_type
     private
-    type(arg_type) :: meta_args(196) = (/                                         &
+    type(arg_type) :: meta_args(197) = (/                                         &
          arg_type(GH_SCALAR, GH_INTEGER, GH_READ),                                &! outer
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      W3),                       &! rho_in_w3
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      WTHETA),                   &! rho_in_wth
@@ -41,6 +41,7 @@ module conv_comorph_kernel_mod
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      WTHETA),                   &! wetrho_in_wth
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      W3),                       &! exner_in_w3
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      WTHETA),                   &! exner_in_wth
+         arg_type(GH_FIELD,  GH_REAL,    GH_READ,      WTHETA),                   &! delta
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      WTHETA),                   &! theta_n
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      W3),                       &! u_in_w3
          arg_type(GH_FIELD,  GH_REAL,    GH_READ,      W3),                       &! v_in_w3
@@ -254,6 +255,7 @@ contains
   !> @param[in]     wetrho_in_wth        Wet density field in wth space
   !> @param[in]     exner_in_w3          Exner pressure field in density space
   !> @param[in]     exner_in_wth         Exner pressure field in wth space
+  !> @param[in]     delta                Edge length on wtheta points
   !> @param[in]     theta_n              Potential temperature at time n
   !> @param[in]     u_in_w3              'Zonal' wind at time n
   !> @param[in]     v_in_w3              'Meridional' wind at time n
@@ -460,6 +462,7 @@ contains
                           wetrho_in_wth,                     &
                           exner_in_w3,                       &
                           exner_in_wth,                      &
+                          delta,                             &
                           theta_n,                           &
                           u_in_w3,                           &
                           v_in_w3,                           &
@@ -859,7 +862,7 @@ contains
                                                          rho_in_wth,        &
                                                          wetrho_in_wth,     &
                                                          exner_in_wth,      &
-                                                         w_in_wth,          &
+                                                         w_in_wth, delta,   &
                                                          theta_n,           &
                                                          theta_star,        &
                                                          height_wth,        &
@@ -1165,6 +1168,8 @@ contains
     ! Surface precipitation rates from the "large-scale" microphysics scheme
     real(kind=r_um) :: ls_rain( row_length, rows)
     real(kind=r_um) :: ls_snow( row_length, rows)
+    ! Grid size used in radius dependence on precip rate
+    real(kind=r_um) :: delta_x( row_length, rows)
 
     ! Parcel radius amplification factor passed into comorph
     real(kind=r_um), target :: par_radius_amp_um(row_length,rows)
@@ -2116,6 +2121,7 @@ contains
         u_s(i,1) = ustar(map_2d(1,i))
         ls_rain(i,1) = ls_rain_2d(map_2d(1,i))
         ls_snow(i,1) = ls_snow_2d(map_2d(1,i))
+        delta_x(i,1) = delta(map_wth(1,i))
       end do
 
       ! Interpolate momentum diffusivity and fluxes onto rho-levels
@@ -2145,6 +2151,7 @@ contains
       ! Calculate turb_len and a scaling factor applied to parcel initial radius
       call calc_turb_len( zh_eff, z_theta, z_rho, rho_wet_tq, qv_n,            &
                           rhokm, bl_w_var, ls_rain, ls_snow, w,                &
+                          delta_x, delta_x,                                    &
                           turb_len, par_radius_amp_um )
 
       ! Check for instances of fluxes too big relative to the turbulent

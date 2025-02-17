@@ -106,7 +106,9 @@ module um_physics_init_mod
                                         orig_mdet_fac_in => orig_mdet_fac,   &
                                      par_gen_mass_fac_in => par_gen_mass_fac, &
                                      par_gen_rhpert_in => par_gen_rhpert,     &
-                                     par_radius_ppn_max_in => par_radius_ppn_max
+                                     par_radius_ppn_max_in => par_radius_ppn_max, &
+                                     resdep_precipramp, dx_ref_in => dx_ref
+
 
   use extrusion_config_mod,      only : domain_height, number_of_layers
 
@@ -308,7 +310,8 @@ contains
          par_gen_pert_fac, par_gen_rhpert, par_radius_evol_method,           &
          par_radius_init_method, par_radius_knob, par_radius_knob_max,       &
          par_radius_ppn_max, r_fac_tdep_n, rain_area_min, rho_rim,           &
-         vent_factor, wind_w_buoy_fac, wind_w_fac, check_run_comorph
+         vent_factor, wind_w_buoy_fac, wind_w_fac, check_run_comorph,        &
+         l_resdep_precipramp, dx_ref
     use cv_run_mod, only: icvdiag, cvdiag_inv, cvdiag_sh_wtest,            &
          limit_pert_opt, tv1_sd_opt, iconv_congestus, iconv_deep,          &
          ent_fac_dp, cldbase_opt_dp, cldbase_opt_sh, w_cape_limit,         &
@@ -742,9 +745,11 @@ contains
         core_ent_fac = 1.0_r_um
         drag_coef_cond = 0.5_r_um
         drag_coef_par = 0.5_r_um
+        dx_ref = dx_ref_in
         ent_coef = 0.2_r_um
         hetnuc_temp = 263.0_r_um
         l_core_ent_cmr = .true.
+        l_resdep_precipramp = resdep_precipramp
         n_dndraft_types = 1
         overlap_power = 0.5_r_um
         par_gen_core_fac = 3.0_r_um

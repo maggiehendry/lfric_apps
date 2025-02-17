@@ -416,3 +416,18 @@ class vn20_t429(MacroUpgrade):
         self.add_setting(config, [nml, "vo_rad_opt"], "'off'")
 
         return config, self.reports
+
+
+class vn20_t552(MacroUpgrade):
+    """Upgrade macro for ticket None by None."""
+
+    BEFORE_TAG = "vn2.0_t429"
+    AFTER_TAG = "vn2.0_t552"
+
+    def upgrade(self, config, meta_config=None):
+        # Commands From: rose-meta/um-convection
+        nml = "namelist:convection"
+        self.add_setting(config, [nml, "resdep_precipramp"], ".false.")
+        self.add_setting(config, [nml, "dx_ref"], "50000.0")
+
+        return config, self.reports

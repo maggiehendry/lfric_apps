@@ -15,7 +15,7 @@ module conv_comorph_alg_mod
        imr_s
 
   use timestepping_config_mod,     only: outer_iterations
-  use sci_geometric_constants_mod, only: get_height
+  use sci_geometric_constants_mod, only: get_height, get_delta_at_wtheta
   use fs_continuity_mod,           only: W3, Wtheta
 
   use io_config_mod,        only: subroutine_timers
@@ -76,6 +76,7 @@ contains
 
     ! Temporary fields unpacked fields from collections
     type( field_type ), pointer :: exner_in_wth
+    type( field_type ), pointer :: delta
     type( field_type ), pointer :: rho_in_wth
     type( field_type ), pointer :: wetrho_in_wth
     type( field_type ), pointer :: wetrho_in_w3
@@ -271,7 +272,8 @@ contains
 
     call log_event( 'Running Comorph convection scheme', LOG_LEVEL_DEBUG )
 
-    mesh => rho%get_mesh()
+    mesh  => rho%get_mesh()
+    delta => get_delta_at_wtheta( mesh%get_id() )
 
     ! Unpack derived fields
     call derived_fields%get_field('exner_in_wth', exner_in_wth)
@@ -482,7 +484,7 @@ contains
 
     call invoke( conv_comorph_kernel_type( outer, rho, rho_in_wth,            &
                           wetrho_in_w3, wetrho_in_wth, exner, exner_in_wth,   &
-                          theta, u_in_w3, v_in_w3, w_in_wth,                  &
+                          delta, theta, u_in_w3, v_in_w3, w_in_wth,           &
                           theta_star, u_in_w3_star, v_in_w3_star,             &
                           height_w3, height_wth,                              &
                           dt_conv, dmv_conv, dmcl_conv,                       &

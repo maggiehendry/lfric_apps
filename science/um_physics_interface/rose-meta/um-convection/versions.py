@@ -43,5 +43,19 @@ class vn20_t334(MacroUpgrade):
         )
         self.add_setting(config, ["namelist:convection", "prog_ent_min"], "0.5")
         self.add_setting(config, ["namelist:convection", "qlmin"], "4.0e-4")
+        return config, self.reports
+
+
+class vn20_t552(MacroUpgrade):
+    """Upgrade macro for ticket None by None."""
+
+    BEFORE_TAG = "vn2.0_t334"
+    AFTER_TAG = "vn2.0_t552"
+
+    def upgrade(self, config, meta_config=None):
+        # Commands From: rose-meta/um-convection
+        nml = "namelist:convection"
+        self.add_setting(config, [nml, "resdep_precipramp"], ".false.")
+        self.add_setting(config, [nml, "dx_ref"], "50000.0")
 
         return config, self.reports
