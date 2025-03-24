@@ -20,9 +20,6 @@ export PSYCLONE_TRANSFORMATION ?= minimum
 
 export PROJECT_DIR := $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 
-export IGNORE_DEPENDENCIES += mod_oasis
-export EXTERNAL_STATIC_LIBRARIES += psmile.MPI1 mct mpeu scrip
-
 # Note - socrates_interface must come before jules_interface as there are dependencies on each other.
 export INTERNAL_DEPENDENCIES = $(CORE_ROOT_DIR)/infrastructure \
                                $(CORE_ROOT_DIR)/components/coupling \
