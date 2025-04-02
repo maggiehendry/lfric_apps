@@ -103,7 +103,8 @@ contains
     ! Inner product test variables
     real(kind=r_def) :: ip1(bundle_size), ip2(bundle_size), ip_mr1(num_moist_factors+nummr), ip_mr2(num_moist_factors+nummr)
     real(kind=r_def) :: inner1, inner2
-    real(kind=r_def), parameter :: u_sf = 1.0e-20_r_def
+    real(kind=r_def), parameter :: u_sf = 1.0e-21_r_def
+    real(kind=r_def), parameter :: t_sf = 1.0e-2_r_def
     real(kind=r_def), parameter :: overall_tolerance = 1000.0_r_def
     real(kind=r_def) :: machine_tol, machine_tol_r_solver
     real(kind=r_def) :: relative_diff, relative_diff_r_solver
@@ -247,8 +248,10 @@ contains
                  x_innerproduct_x( ip1(igh_p), exner ), &
 
     ! Scaling factors
-                 inc_a_times_x( u_sf, u ) )
+                 inc_a_times_x( u_sf, u ),              &
+                 inc_a_times_x( t_sf, theta ) )
     ip1(igh_u) = ip1(igh_u) * u_sf
+    ip1(igh_t) = ip1(igh_t) * t_sf
 
     inner1 = sum(ip1) + sum(ip_mr1(:))
 

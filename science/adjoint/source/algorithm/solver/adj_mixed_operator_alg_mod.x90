@@ -9,6 +9,7 @@ module adj_mixed_operator_alg_mod
 
   use adj_apply_elim_mixed_lp_operator_kernel_mod, only: adj_apply_elim_mixed_lp_operator_kernel_type
   use adj_apply_mixed_lu_operator_kernel_mod,      only: adj_apply_mixed_lu_operator_kernel_type
+  use adj_apply_mixed_operator_kernel_mod,         only: adj_apply_mixed_operator_kernel_type
   use adj_combine_w2_field_kernel_mod,             only: adj_combine_w2_field_kernel_type
   use adj_dg_inc_matrix_vector_kernel_mod,         only: adj_dg_inc_matrix_vector_kernel_type
   use adj_split_w2_field_kernel_mod,               only: adj_split_w2_field_kernel_type
@@ -170,17 +171,16 @@ contains
 
         if (.not. optimised_operator) then
           ! Create fields in 3D W2 space
-           p_h = y%vector(isol_u)%get_element_order_h()
-           p_v = y%vector(isol_u)%get_element_order_v()
+          p_h = x%vector(isol_u)%get_element_order_h()
+          p_v = x%vector(isol_u)%get_element_order_v()
           u_fs => function_space_collection%get_fs( mesh, p_h, p_v, W2 )
-
           call x_uvw%initialise(vector_space=u_fs)
           call y_uvw%initialise(vector_space=u_fs)
+          call invoke( setval_c( y_uvw , 0.0_r_solver ), &
+                       setval_c( x_uvw , 0.0_r_solver ) )
         end if
 
-        call invoke( setval_c( y_uvw , 0.0_r_solver ),   &
-                     setval_c( x_uvw , 0.0_r_solver ),   &
-                     setval_c( xvec_p , 0.0_r_solver ),  &
+        call invoke( setval_c( xvec_p , 0.0_r_solver ),  &
                      setval_c( xvec_uv , 0.0_r_solver ), &
                      setval_c( xvec_w , 0.0_r_solver ) )
 
@@ -201,7 +201,12 @@ contains
         case (eliminate_variables_discrete)
           q32_op => get_eliminated_q32()
           if (optimised_operator) then
-            call log_event( 'apply_adj_mixed_operator: optimised_operator not coded', LOG_LEVEL_ERROR )
+            call invoke( adj_apply_mixed_operator_kernel_type( yvec_uv, yvec_w, yvec_p,            &
+                                                               xvec_uv, xvec_w, xvec_p,            &
+                                                               ptheta2, mt_lumped_inv,             &
+                                                               mm_vel, p2theta, div_star, m2_diag, &
+                                                               m3_exner_star, q32_op, p3theta ),   &
+                         setval_c( yvec_uv, 0.0_r_solver ) )
           else
             t_fs => function_space_collection%get_fs( mesh, p_h, p_v, Wtheta )
             call x_t%initialise(vector_space=t_fs)
@@ -223,13 +228,17 @@ contains
           call log_event( 'Invalid mixed solver elimination selected', LOG_LEVEL_ERROR )
         end select
 
-        if (split_w) then
-          call invoke( adj_combine_w2_field_kernel_type( x_uvw,xvec_uv, xvec_w,  &
-                                                         face_selector_ew,       &
-                                                         face_selector_ns ),     &
-                       enforce_bc_kernel_type(xvec_w) )
+        if (.not. optimised_operator) then
+          if (split_w) then
+            call invoke( adj_combine_w2_field_kernel_type( x_uvw,xvec_uv, xvec_w,  &
+                                                           face_selector_ew,       &
+                                                           face_selector_ns ),     &
+                         enforce_bc_kernel_type(xvec_w) )
+          else
+            call log_event( 'apply_adj_mixed_operator: .not. split_w not coded', LOG_LEVEL_ERROR )
+          end if
         else
-          call log_event( 'apply_adj_mixed_operator: .not. split_w not coded', LOG_LEVEL_ERROR )
+          call invoke( enforce_bc_kernel_type(xvec_w) )
         end if
 
         ! Call "revert" to reset x to input values (needed for adjoint tests)

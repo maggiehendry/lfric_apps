@@ -40,6 +40,7 @@ all: export ACTIVE_tl_rhs_sample_eos_kernel_mod            := exner exner_e exne
                                                               theta theta_vd_e theta_vd_cell moist_dyn_gas
 all: export ACTIVE_stabilise_bl_u_kernel_mod               := u_stabilised u_initial u_final
 all: export ACTIVE_apply_mixed_lu_operator_kernel_mod      := wind theta exner lhs_u lhs_t
+all: export ACTIVE_apply_mixed_operator_kernel_mod         := u_e t_col lhs_p lhs_w lhs_uv exner wind_w wind_uv
 all: export ACTIVE_opt_apply_variable_hx_kernel_mod        := lhs x pressure rhs_p \
                                                               div_u t_e t_e1_vec t_e2_vec
 all: export ACTIVE_apply_elim_mixed_lp_operator_kernel_mod := theta exner u lhs_exner \
