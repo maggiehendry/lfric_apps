@@ -729,6 +729,9 @@ contains
        call coupling_ptr%define_variables( cpl_snd_2d, &
                                            cpl_rcv_2d, &
                                            cpl_snd_0d )
+       call coupling_ptr%end_definition( cpl_snd_2d, &
+                                         cpl_rcv_2d, &
+                                         cpl_snd_0d )
 
     endif
 #endif
