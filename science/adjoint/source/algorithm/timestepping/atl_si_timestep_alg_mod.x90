@@ -29,7 +29,7 @@ module atl_si_timestep_alg_mod
   use sci_fem_constants_mod,               only: get_mass_matrix, get_qr
   use sci_field_bundle_builtins_mod,       only: clone_bundle, copy_bundle,     &
                                                  set_bundle_scalar, add_bundle, &
-                                                 bundle_axpy, bundle_ax
+                                                 bundle_axpy, bundle_ax, bundle_is_zero
   use fs_continuity_mod,                   only: Wtheta, W2
   use moist_dyn_factors_alg_mod,           only: moist_dyn_factors_alg
   use dg_inc_matrix_vector_kernel_mod,     only: dg_inc_matrix_vector_kernel_type
@@ -592,9 +592,12 @@ contains
         mixed_solver_nml => modeldb%configuration%get_namelist('mixed_solver')
         call mixed_solver_nml%get_value( 'mixed_solver_a_tol', mixed_solver_a_tol )
 
-        call self%adj_semi_implicit_solver%step( self%state, self%rhs_np1, &
-                                                 moist_dyn(gas_law), mr,   &
-                                                 .false., first_iteration=(inner==1) )
+        ! If self%state is zero, there is no need to call the SI solver
+        if (.not. bundle_is_zero( mixed_solver_a_tol, self%state, bundle_size )) then
+          call self%adj_semi_implicit_solver%step( self%state, self%rhs_np1, &
+                                                   moist_dyn(gas_law), mr,   &
+                                                   .false., first_iteration=(inner==1) )
+        end if
 
         ! Accelerators for inner loop convergence
         if (inner > 1) then
