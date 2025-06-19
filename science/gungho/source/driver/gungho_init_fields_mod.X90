@@ -94,6 +94,7 @@ module gungho_init_fields_mod
   use init_ancils_mod,                    only : create_fd_ancils, &
                                                  create_fd_ancils_idealised
   use process_inputs_alg_mod,             only : process_inputs_alg
+  use process_urban_alg_mod,              only : process_urban_alg
   use update_tstar_alg_mod,               only : update_tstar_alg
   use variable_fields_mod,                only : init_variable_fields
   use lfric_xios_time_axis_mod,           only : regridder
@@ -864,6 +865,13 @@ subroutine create_model_data( modeldb,      &
             end if
 
           end if
+
+          ! Urban fields need calculating even on checkpoint-read
+          call process_urban_alg(surface_fields)
+          call surface_fields%remove_field("urbemisw")
+          call depository%remove_field("urbemisw")
+          call surface_fields%remove_field("urbemisr")
+          call depository%remove_field("urbemisr")
 
           ! Free up any ancils which are no longer needed
           if (prognostic_init_choice == init_option_fd_start_dump) then

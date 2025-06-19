@@ -33,7 +33,6 @@ module jules_exp_kernel_mod
                                      buddy_sea, buddy_sea_on,                  &
                                      z0m_specified_nml => z0m_specified,       &
                                      z0h_specified_nml => z0h_specified
-  use surface_config_mod,     only : emis_method_soil, emis_method_soil_fixed
   use water_constants_mod,    only : tfs
 
   implicit none
@@ -47,7 +46,7 @@ module jules_exp_kernel_mod
   !>
   type, public, extends(kernel_type) :: jules_exp_kernel_type
     private
-    type(arg_type) :: meta_args(110) = (/                                      &
+    type(arg_type) :: meta_args(108) = (/                                      &
          arg_type(GH_FIELD, GH_REAL,  GH_READ,      WTHETA),                   &! theta_in_wth
          arg_type(GH_FIELD, GH_REAL,  GH_READ,      WTHETA),                   &! exner_in_wth
          arg_type(GH_FIELD, GH_REAL,  GH_READ,      W3, STENCIL(REGION)),      &! u_in_w3
@@ -148,8 +147,6 @@ module jules_exp_kernel_mod
          arg_type(GH_FIELD, GH_REAL,  GH_READ,      ANY_DISCONTINUOUS_SPACE_1), &! urbhgt
          arg_type(GH_FIELD, GH_REAL,  GH_READ,      ANY_DISCONTINUOUS_SPACE_1), &! urbztm
          arg_type(GH_FIELD, GH_REAL,  GH_READ,      ANY_DISCONTINUOUS_SPACE_1), &! urbdisp
-         arg_type(GH_FIELD, GH_REAL,  GH_READ,      ANY_DISCONTINUOUS_SPACE_1), &! urbemisw
-         arg_type(GH_FIELD, GH_REAL,  GH_READ,      ANY_DISCONTINUOUS_SPACE_1), &! urbemisr
          arg_type(GH_FIELD, GH_REAL,  GH_WRITE,     ANY_DISCONTINUOUS_SPACE_1),&! rhostar
          arg_type(GH_FIELD, GH_REAL,  GH_WRITE,     ANY_DISCONTINUOUS_SPACE_1),&! recip_l_mo_sea
          arg_type(GH_FIELD, GH_REAL,  GH_WRITE,     ANY_DISCONTINUOUS_SPACE_1),&! h_blend_orog
@@ -272,8 +269,6 @@ contains
   !> @param[in]     urbhgt                 Urban building height
   !> @param[in]     urbztm                 Urban effective roughness length
   !> @param[in]     urbdisp                Urban displacement height
-  !> @param[in]     urbemisw               Urban wall emissivity
-  !> @param[in]     urbemisr               Urban road emissivity
   !> @param[in,out] rhostar_2d             Surface density
   !> @param[in,out] recip_l_mo_sea_2d      Inverse Obukhov length over sea only
   !> @param[in,out] h_blend_orog_2d        Orographic blending height
@@ -424,8 +419,6 @@ contains
                            urbhgt,                                &
                            urbztm,                                &
                            urbdisp,                               &
-                           urbemisw,                              &
-                           urbemisr,                              &
                            rhostar_2d,                            &
                            recip_l_mo_sea_2d,                     &
                            h_blend_orog_2d,                       &
@@ -664,8 +657,6 @@ contains
     real(kind=r_def), intent(in) :: urbhgt(undf_2d)
     real(kind=r_def), intent(in) :: urbztm(undf_2d)
     real(kind=r_def), intent(in) :: urbdisp(undf_2d)
-    real(kind=r_def), intent(in) :: urbemisw(undf_2d)
-    real(kind=r_def), intent(in) :: urbemisr(undf_2d)
 
     real(kind=r_def), intent(in) :: soil_moist_wilt(undf_2d)
     real(kind=r_def), intent(in) :: soil_moist_crit(undf_2d)
@@ -1155,8 +1146,6 @@ contains
         urban_param%hgt_gb(l)   = real(urbhgt(map_2d(1,ainfo%land_index(l))), r_um)
         urban_param%ztm_gb(l)   = real(urbztm(map_2d(1,ainfo%land_index(l))), r_um)
         urban_param%disp_gb(l)  = real(urbdisp(map_2d(1,ainfo%land_index(l))), r_um)
-        urban_param%emisw_gb(l) = real(urbemisw(map_2d(1,ainfo%land_index(l))), r_um)
-        urban_param%emisr_gb(l) = real(urbemisr(map_2d(1,ainfo%land_index(l))), r_um)
       end do
     end if
 
@@ -1242,7 +1231,8 @@ contains
       end do
     end do
 
-    if (emis_method_soil /= emis_method_soil_fixed) fluxes%l_emis_surft_set(soil)=.true.
+    ! Emissivity is set in lw_rad_tile_kernel
+    fluxes%l_emis_surft_set(:) = .true.
 
     do i = 1, seg_len
       ! Net SW on open sea

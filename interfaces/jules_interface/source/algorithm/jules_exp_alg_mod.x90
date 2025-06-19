@@ -177,8 +177,6 @@ contains
     type( field_type ), pointer :: urbhgt
     type( field_type ), pointer :: urbztm
     type( field_type ), pointer :: urbdisp
-    type( field_type ), pointer :: urbemisw
-    type( field_type ), pointer :: urbemisr
     type( integer_field_type ), pointer :: ocn_cpl_point
 
     type( field_type ), pointer :: peak_to_trough_orog
@@ -329,8 +327,6 @@ contains
     call surface_fields%get_field('urbhgt', urbhgt)
     call surface_fields%get_field('urbztm', urbztm)
     call surface_fields%get_field('urbdisp', urbdisp)
-    call surface_fields%get_field('urbemisw', urbemisw)
-    call surface_fields%get_field('urbemisr', urbemisr)
     call surface_fields%get_field('sea_current_w2',sea_current_w2_ptr)
     call surface_fields%get_field('sea_u_current',sea_u_current_ptr)
     call surface_fields%get_field('sea_v_current',sea_v_current_ptr)
@@ -447,8 +443,8 @@ contains
                                albedo_obs_scaling, soil_clay, soil_sand,       &
                                dust_mrel, dust_flux, day_of_year,              &
                                flux_e, flux_h, urbwrr,                         &
-                               urbhwr, urbhgt, urbztm, urbdisp, urbemisw,      &
-                               urbemisr, rhostar, recip_l_mo_sea,              &
+                               urbhwr, urbhgt, urbztm, urbdisp,                &
+                               rhostar, recip_l_mo_sea,                        &
                                h_blend_orog, t1_sd_2d, q1_sd_2d,               &
                                gross_prim_prod, z0h_eff, ocn_cpl_point,        &
                                stencil_depth)

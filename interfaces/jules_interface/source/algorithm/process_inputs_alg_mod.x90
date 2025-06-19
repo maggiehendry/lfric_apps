@@ -26,12 +26,10 @@ module process_inputs_alg_mod
   use process_ssi_kernel_mod,     only: process_ssi_kernel_type
   use process_soil_kernel_mod,    only: process_soil_kernel_type
   use process_snow_kernel_mod,    only: process_snow_kernel_type
-  use process_urban_kernel_mod,   only: process_urban_kernel_type
   use jules_snow_mod,             only: nsmax
   use jules_control_init_mod,     only: n_land_tile, &
                                         first_sea_tile, n_sea_tile, &
                                         first_sea_ice_tile, n_sea_ice_tile
-  use jules_surface_config_mod,   only: l_urban2t
   use jules_sea_seaice_config_mod, only: amip_ice_thick
   use sci_multi_insert_kernel_mod, only: multi_insert_kernel_type
   use sci_int_multi_insert_kernel_mod, only: int_multi_insert_kernel_type
@@ -81,12 +79,6 @@ contains
 
     type( field_type ), pointer :: canopy_water => null()
     type( field_type ), pointer :: can_water_in => null()
-
-    type( field_type ), pointer :: urbwrr            => null()
-    type( field_type ), pointer :: urbhwr            => null()
-    type( field_type ), pointer :: urbhgt            => null()
-    type( field_type ), pointer :: urbztm            => null()
-    type( field_type ), pointer :: urbdisp           => null()
 
     type( field_type ), pointer :: soil_moist_sat    => null()
     type( field_type ), pointer :: soil_moist_wilt   => null()
@@ -165,15 +157,6 @@ contains
       end if
       call surface_fields%get_field('tile_temperature', tile_temperature)
 
-      if ( l_urban2t .and. (init_option == init_option_fd_start_dump .and. &
-         .not. checkpoint_read) ) then
-        call surface_fields%get_field('urbwrr', urbwrr)
-        call surface_fields%get_field('urbhwr', urbhwr)
-        call surface_fields%get_field('urbhgt', urbhgt)
-        call surface_fields%get_field('urbztm', urbztm)
-        call surface_fields%get_field('urbdisp', urbdisp)
-      end if
-
       if (init_option == init_option_fd_start_dump .and. &
            .not. checkpoint_read) then
         call soil_fields%get_field('soil_moist_sat', soil_moist_sat)
@@ -251,13 +234,6 @@ contains
                                            amip_ice_thick, l_esm_couple),     &
                   multi_insert_kernel_type(tile_temperature, tstar_sea,       &
                                            first_sea_tile, n_sea_tile ))
-
-      ! Urban fields (contained in surface fields)
-      if ( l_urban2t .and. (init_option == init_option_fd_start_dump .and.     &
-         .not. checkpoint_read) ) then
-        call invoke(process_urban_kernel_type( urbwrr, urbhwr, urbhgt,         &
-                                             urbztm, urbdisp ))
-      end if
 
       ! Soil fields
       if (init_option == init_option_fd_start_dump .and. &

@@ -905,6 +905,8 @@ contains
                                    empty = (.not. l_urban2t) ))
     call processor%apply(make_spec('urbemisr', main%surface, W3, twod=.true., &
                                    empty = (.not. l_urban2t) ))
+    call processor%apply(make_spec('urbemisc', main%surface, W3, twod=.true., &
+                                   empty = (.not. l_urban2t)))
     ! 2D fields, need checkpointing for urban-2-tile schemes
     call processor%apply(make_spec('urbwrr', main%surface, twod=.true., &
                                    ckp=l_urban2t, empty = (.not. l_urban2t) ))

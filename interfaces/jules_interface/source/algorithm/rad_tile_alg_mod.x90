@@ -26,7 +26,8 @@ use radiation_config_mod,          only: l_planet_grey_surface, &
                                          planet_emissivity, planet_albedo, &
                                          n_radstep, &
                                          l_inc_radstep, n_inc_radstep
-use section_choice_config_mod,     only: surface, surface_jules
+use section_choice_config_mod,     only: surface, surface_jules, radiation, &
+                                         radiation_socrates
 
 use socrates_init_mod, only: wavelength_short, wavelength_long, &
   n_band_exclude, index_exclude, weight_blue, &
@@ -109,6 +110,7 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
   type( field_type ), pointer :: urbztm            => null()
   type( field_type ), pointer :: urbalbwl          => null()
   type( field_type ), pointer :: urbalbrd          => null()
+  type( field_type ), pointer :: urbemisc
 
   type( field_type ), pointer :: soil_albedo       => null()
   type( field_type ), pointer :: soil_roughness    => null()
@@ -148,7 +150,7 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
 
   call surface_fields%get_field('tile_lw_grey_albedo', tile_lw_grey_albedo)
 
-  if (l_inc_radstep) then
+  if (radiation == radiation_socrates .and. l_inc_radstep) then
     ! Radiation increments use different spectral files with fewer bands
     vector_space => function_space_collection%get_fs( &
                       twod_mesh, 0, 0, W3, n_swinc_band * n_surf_tile )
@@ -175,7 +177,7 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
                 setval_c(tile_sw_diffuse_albedo, planet_albedo), &
                 setval_c(tile_lw_albedo,         planet_lw_albedo), &
                 setval_c(tile_lw_grey_albedo,    planet_lw_albedo))
-    if (l_inc_radstep) then
+    if (radiation == radiation_socrates .and. l_inc_radstep) then
      call invoke(setval_c(tile_swinc_direct_albedo,  planet_albedo), &
                  setval_c(tile_swinc_diffuse_albedo, planet_albedo), &
                  setval_c(tile_lwinc_albedo,         planet_lw_albedo))
@@ -201,6 +203,7 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
     call surface_fields%get_field('urbztm', urbztm)
     call surface_fields%get_field('urbalbwl', urbalbwl)
     call surface_fields%get_field('urbalbrd', urbalbrd)
+    call surface_fields%get_field('urbemisc', urbemisc)
 
     call soil_fields%get_field('soil_albedo', soil_albedo)
     call soil_fields%get_field('soil_roughness', soil_roughness)
@@ -221,7 +224,8 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
     dz_wth            => get_dz_at_wtheta(u_in_w3%get_mesh_id())
 
     ! SW albedos only required on radiation timesteps
-    if (mod(timestep-1_i_def, n_radstep) == 0) then
+    if (radiation == radiation_socrates .and. &
+         mod(timestep-1_i_def, n_radstep) == 0) then
       ! Scalar arrays passed through module scope until kernels can handle them
       wavelength_short => sw_wavelength_short
       wavelength_long => sw_wavelength_long
@@ -241,7 +245,7 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
         n_sw_band))
     end if
 
-    if (l_inc_radstep) then
+    if (radiation == radiation_socrates .and. l_inc_radstep) then
       ! Albedos required on different bands for the radiation increments
       if (mod(timestep-1_i_def, n_inc_radstep) == 0) then
         wavelength_short => swinc_wavelength_short
@@ -269,6 +273,12 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
                                             tile_lw_grey_albedo, &
                                             tile_fraction, &
                                             tile_temperature, &
+                                            tile_snow_mass, &
+                                            leaf_area_index, &
+                                            canopy_height, &
+                                            soil_roughness, &
+                                            urbztm, &
+                                            urbemisc, &
                                             n_lwinc_band))
       end if
     end if
@@ -282,6 +292,12 @@ subroutine rad_tile_alg(tile_sw_direct_albedo, tile_sw_diffuse_albedo,       &
                                         tile_lw_grey_albedo, &
                                         tile_fraction, &
                                         tile_temperature, &
+                                        tile_snow_mass, &
+                                        leaf_area_index, &
+                                        canopy_height, &
+                                        soil_roughness, &
+                                        urbztm, &
+                                        urbemisc, &
                                         n_lw_band))
 
   else

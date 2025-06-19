@@ -61,6 +61,7 @@ contains
     type( field_type ), pointer :: urbalbrd            => null()
     type( field_type ), pointer :: urbemisr            => null()
     type( field_type ), pointer :: urbemisw            => null()
+    type( field_type ), pointer :: urbemisc
     type( field_type ), pointer :: internal_flux       => null()
 
     ! Diagnostic fields
@@ -167,6 +168,17 @@ contains
                  ! Set 10m wind speed to zero
                  setval_c(wspd10m, 0.0_r_def) )
 
+    if (l_urban2t) then
+      call surface_fields%get_field('urbalbwl', urbalbwl)
+      call surface_fields%get_field('urbalbrd', urbalbrd)
+      call surface_fields%get_field('urbemisw', urbemisw)
+      call surface_fields%get_field('urbemisr', urbemisr)
+      call invoke(setval_c(urbalbwl,            0.375_r_def),                  &
+                  setval_c(urbalbrd,            0.08_r_def),                   &
+                  setval_c(urbemisw,            0.875_r_def),                  &
+                  setval_c(urbemisr,            0.95_r_def) )
+    end if
+
     if (init_option == init_option_analytic .or. &
          ancil_option == ancil_option_none) then
 
@@ -180,10 +192,7 @@ contains
         call surface_fields%get_field('urbhgt', urbhgt)
         call surface_fields%get_field('urbztm', urbztm)
         call surface_fields%get_field('urbdisp', urbdisp)
-        call surface_fields%get_field('urbalbwl', urbalbwl)
-        call surface_fields%get_field('urbalbrd', urbalbrd)
-        call surface_fields%get_field('urbemisw', urbemisw)
-        call surface_fields%get_field('urbemisr', urbemisr)
+        call surface_fields%get_field('urbemisc', urbemisc)
 
         call invoke(                                                          &
                  ! Ancillary fields for use if no ancil read
@@ -192,11 +201,8 @@ contains
                  setval_c(urbhgt,              10.0_r_def),                   &
                  ! Calculated urban areodynamic fields
                  process_urban_kernel_type( urbwrr, urbhwr, urbhgt,           &
-                                             urbztm, urbdisp ),               &
-                 setval_c(urbalbwl,            0.375_r_def),                  &
-                 setval_c(urbalbrd,            0.08_r_def),                   &
-                 setval_c(urbemisw,            0.875_r_def),                  &
-                 setval_c(urbemisr,            0.95_r_def) )
+                                            urbztm, urbdisp, urbemisw,        &
+                                            urbemisr, urbemisc ) )
       end if
 
     end if

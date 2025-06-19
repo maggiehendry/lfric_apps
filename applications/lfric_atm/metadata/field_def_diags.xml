@@ -581,8 +581,6 @@
   <field id="surface__disp" name="urbdisp" long_name="Urban displacement height" unit="m" domain_ref="face" />
   <field id="surface__albwl" name="urbalbwl" long_name="Urban wall abedo" unit="1" domain_ref="face" />
   <field id="surface__albrd" name="urbalbrd" long_name="Urban road abedo" unit="1" domain_ref="face" />
-  <field id="surface__emisw" name="urbemisw" long_name="Urban wall emissivity" unit="1" domain_ref="face" />
-  <field id="surface__emisr" name="urbemisr" long_name="Urban road emissivity" unit="1" domain_ref="face" />
   <!-- GBM surface diagnostics derived from BL turbulence diagnostics -->
   <!-- First line extracts level 1, second line removes vertical coordinate, cannot do as one -->
   <field id="zoomed__sh" field_ref="turbulence__heat_flux_bl" grid_ref="half_level_1_face_zoom" />

@@ -298,7 +298,7 @@ sw_down_surf, lw_down_surf, sw_down_blue_surf, sw_direct_blue_surf, dd_mf_cb, oz
 &alpha1_tile, ashtf_prime_tile, dtstar_tile, fracaero_t_tile, fracaero_s_tile, z0h_tile, &
 &z0m_tile, rhokh_tile, chr1p5m_tile, resfs_tile, gc_tile, canhc_tile, tile_water_extract, blend_height_tq, z0m_eff, ustar, &
 &soil_moist_avail, snow_unload_rate, albedo_obs_scaling, soil_clay, soil_sand, dust_mrel, dust_flux, day_of_year, &
-flux_e, flux_h, urbwrr, urbhwr, urbhgt, urbztm, urbdisp, urbemisw, urbemisr, &
+flux_e, flux_h, urbwrr, urbhwr, urbhgt, urbztm, urbdisp, &
 &rhostar, recip_l_mo_sea, &
 &h_blend_orog, t1_sd_2d, q1_sd_2d, gross_prim_prod, z0h_eff, ocn_cpl_point, stencil_depth)
       USE jules_exp_kernel_mod, ONLY: jules_exp_code
@@ -319,7 +319,7 @@ skyview, sw_up_tile, tile_lw_grey_albedo,&
 &alpha1_tile, ashtf_prime_tile, dtstar_tile, fracaero_t_tile, fracaero_s_tile, z0h_tile, z0m_tile, rhokh_tile, &
 &chr1p5m_tile, resfs_tile, gc_tile, canhc_tile, tile_water_extract, z0m_eff, ustar, soil_moist_avail, snow_unload_rate, &
 &albedo_obs_scaling, soil_clay, soil_sand, dust_mrel, dust_flux, &
-urbwrr, urbhwr, urbhgt, urbztm, urbdisp, urbemisw, urbemisr, &
+urbwrr, urbhwr, urbhgt, urbztm, urbdisp, &
 rhostar, recip_l_mo_sea, h_blend_orog, t1_sd_2d, q1_sd_2d, &
 &gross_prim_prod, z0h_eff
       TYPE(integer_field_type), intent(in) :: n_snow_layers, blend_height_tq, ocn_cpl_point
@@ -346,7 +346,7 @@ sw_down_surf_proxy, lw_down_surf_proxy, sw_down_blue_surf_proxy, sw_direct_blue_
 &z0h_tile_proxy, z0m_tile_proxy, rhokh_tile_proxy, chr1p5m_tile_proxy, resfs_tile_proxy, gc_tile_proxy, canhc_tile_proxy, &
 &tile_water_extract_proxy, z0m_eff_proxy, ustar_proxy, soil_moist_avail_proxy, snow_unload_rate_proxy, albedo_obs_scaling_proxy, &
 &soil_clay_proxy, soil_sand_proxy, dust_mrel_proxy, dust_flux_proxy, &
-urbwrr_proxy, urbhwr_proxy, urbhgt_proxy, urbztm_proxy, urbdisp_proxy, urbemisw_proxy, urbemisr_proxy, &
+urbwrr_proxy, urbhwr_proxy, urbhgt_proxy, urbztm_proxy, urbdisp_proxy, &
 rhostar_proxy, recip_l_mo_sea_proxy, h_blend_orog_proxy, &
 &t1_sd_2d_proxy, q1_sd_2d_proxy, gross_prim_prod_proxy, z0h_eff_proxy
       INTEGER(KIND=i_def), pointer :: map_adspc10_dust_mrel(:,:) => null(), map_adspc1_zh(:,:) => null(), &
@@ -475,8 +475,6 @@ rhostar_proxy, recip_l_mo_sea_proxy, h_blend_orog_proxy, &
       urbhgt_proxy = urbhgt%get_proxy()
       urbztm_proxy = urbztm%get_proxy()
       urbdisp_proxy = urbdisp%get_proxy()
-      urbemisw_proxy = urbemisw%get_proxy()
-      urbemisr_proxy = urbemisr%get_proxy()
       rhostar_proxy = rhostar%get_proxy()
       recip_l_mo_sea_proxy = recip_l_mo_sea%get_proxy()
       h_blend_orog_proxy = h_blend_orog%get_proxy()
@@ -635,7 +633,7 @@ sw_up_tile_proxy%data, tile_lw_grey_albedo_proxy%data, sw_down_surf_proxy%data, 
 &soil_sand_proxy%data, dust_mrel_proxy%data, dust_flux_proxy%data, day_of_year,&
 flux_e, flux_h, &
 urbwrr_proxy%data, urbhwr_proxy%data, urbhgt_proxy%data, urbztm_proxy%data, &
-urbdisp_proxy%data, urbemisw_proxy%data, urbemisr_proxy%data, &
+urbdisp_proxy%data, &
 rhostar_proxy%data, recip_l_mo_sea_proxy%data, &
 &h_blend_orog_proxy%data, t1_sd_2d_proxy%data, q1_sd_2d_proxy%data, gross_prim_prod_proxy%data, &
 z0h_eff_proxy%data, ocn_cpl_point_proxy%data, ndf_wtheta, &

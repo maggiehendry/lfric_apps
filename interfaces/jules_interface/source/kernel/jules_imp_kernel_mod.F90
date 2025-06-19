@@ -27,7 +27,6 @@ module jules_imp_kernel_mod
   use timestepping_config_mod,   only : outer_iterations
   use water_constants_mod,       only : tfs, lc, lf
   use derived_config_mod,        only : l_esm_couple
-  use surface_config_mod,        only : emis_method_soil, emis_method_soil_fixed
 
   implicit none
 
@@ -1033,8 +1032,6 @@ contains
           rhokh_surft(l, n) = rhokh_tile(map_tile(1,ainfo%land_index(l))+n-1)
         end do
       end do
-
-      if (emis_method_soil /= emis_method_soil_fixed) fluxes%l_emis_surft_set(soil)=.true.
 
       i_tile = 0
       do n = 1, n_land_tile
