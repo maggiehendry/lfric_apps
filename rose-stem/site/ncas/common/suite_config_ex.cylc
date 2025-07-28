@@ -39,7 +39,7 @@
                      module use /work/y07/shared/lfric/software/spack/lfric-spack/modules
                      module load PrgEnv-gnu
                      module load lfric-spack
-                     spack load lfric-apps@2.1%gcc
+                     spack load lfric-apps@2.2%gcc shumlib@13.9+openmp%gcc
                      """
         [[[environment]]]
              COMPILER = 'gnu'
@@ -50,7 +50,7 @@
                      module use /work/y07/shared/lfric/software/spack/lfric-spack/modules
                      module load PrgEnv-cray
                      module load lfric-spack
-                     spack load lfric-apps@2.1%cce
+                     spack load lfric-apps@2.2%cce shumlib@13.9+openmp%cce
                      """
         [[[environment]]]
              COMPILER = 'cce'
