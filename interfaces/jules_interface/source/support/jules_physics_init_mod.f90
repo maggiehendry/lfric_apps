@@ -27,8 +27,7 @@ module jules_physics_init_mod
                        albsnf_maxu_io,  alpha_io,         alpha_elec_io,       &
                        alnir_io,        alnirl_io,        alniru_io,           &
                        alpar_io,        alparl_io,        alparu_io,           &
-                       avg_ba_io,       b_wl_io,          c3_io,               &
-                       c3_io_c3,        c3_io_not_c3,                          &
+                       avg_ba_io,       b_wl_io,                               &
                        can_struct_a_io, catch0_io,        ccleaf_max_io,       &
                        ccleaf_min_io,   ccwood_max_io,    ccwood_min_io,       &
                        ci_st_io,        dcatch_dlai_io,   deact_jmax_io,       &
@@ -53,7 +52,7 @@ module jules_physics_init_mod
                        nr_io,           nr_nl_io,         ns_nl_io,            &
                        nsw_io,          omega_io,         omegal_io,           &
                        omegau_io,       omnir_io,         omnirl_io,           &
-                       omniru_io,       orient_io,        q10_leaf_io,         &
+                       omniru_io,       q10_leaf_io,                           &
                        r_grow_io,       rootd_ft_io,      sigl_io,             &
                        tef_io,          tleaf_of_io,      tlow_io,             &
                        tupp_io,         vint_io,          vsl_io,              &
@@ -802,16 +801,8 @@ contains
     vsl = real(vsl_io, r_um)
     z0v = real(z0v_io, r_um)
 
-    WHERE(c3_io == c3_io_c3)
-      c3(:) = 1
-    ELSEWHERE(c3_io == c3_io_not_c3)
-      c3(:) = 0
-    END WHERE
-    WHERE(orient_io == 'horizontal')
-      orient(:) = 1
-    ELSEWHERE(orient_io == 'spherical')
-      orient(:) = 0
-    END WHERE
+    c3=(/ 1,1,1,0,1 /)
+    orient=(/ 0,0,0,0,0 /)
 
     ! ----------------------------------------------------------------
     ! Settings which are specified on all surface tiles at once
