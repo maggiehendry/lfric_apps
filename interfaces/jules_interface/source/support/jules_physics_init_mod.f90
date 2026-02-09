@@ -9,7 +9,7 @@
 module jules_physics_init_mod
 
   ! Other LFRic modules used
-  use constants_mod,          only : r_um, i_def, r_def
+  use constants_mod,          only : r_um, i_um, i_def, r_def
   use jules_control_init_mod, only : n_sea_ice_tile, n_land_tile
   use jules_hydrology_config_mod, only :                                       &
                               l_hydrology_in => l_hydrology,                   &
@@ -27,7 +27,7 @@ module jules_physics_init_mod
                        albsnf_maxu_io,  alpha_io,         alpha_elec_io,       &
                        alnir_io,        alnirl_io,        alniru_io,           &
                        alpar_io,        alparl_io,        alparu_io,           &
-                       avg_ba_io,       b_wl_io,                               &
+                       avg_ba_io,       b_wl_io,          c3_io,               &
                        can_struct_a_io, catch0_io,        ccleaf_max_io,       &
                        ccleaf_min_io,   ccwood_max_io,    ccwood_min_io,       &
                        ci_st_io,        dcatch_dlai_io,   deact_jmax_io,       &
@@ -52,7 +52,7 @@ module jules_physics_init_mod
                        nr_io,           nr_nl_io,         ns_nl_io,            &
                        nsw_io,          omega_io,         omegal_io,           &
                        omegau_io,       omnir_io,         omnirl_io,           &
-                       omniru_io,       q10_leaf_io,                           &
+                       omniru_io,       orient_io,        q10_leaf_io,         &
                        r_grow_io,       rootd_ft_io,      sigl_io,             &
                        tef_io,          tleaf_of_io,      tlow_io,             &
                        tupp_io,         vint_io,          vsl_io,              &
@@ -738,6 +738,10 @@ contains
     ! ----------------------------------------------------------------
     ! JULES vegetation tile settigs - contained in module pftparm
     ! ----------------------------------------------------------------
+    ! Enumeration not compatible with integer arrays
+    c3 = int(c3_io, i_um)
+    orient = int(orient_io, i_um)
+
     a_wl = real(a_wl_io, r_um)
     a_ws = real(a_ws_io, r_um)
     albsnc_max = real(albsnc_max_io, r_um)
@@ -800,9 +804,6 @@ contains
     vint = real(vint_io, r_um)
     vsl = real(vsl_io, r_um)
     z0v = real(z0v_io, r_um)
-
-    c3=(/ 1,1,1,0,1 /)
-    orient=(/ 0,0,0,0,0 /)
 
     ! ----------------------------------------------------------------
     ! Settings which are specified on all surface tiles at once
