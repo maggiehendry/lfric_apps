@@ -22,7 +22,7 @@ casim:
     ref: 2026.03.2
 
 jules:
-    source: cazld00001l:/var/tmp/persistent/review_copies/jules
+    source: cazldf00000W.spice.sc.metoffice.gov.uk:/home/users/margaret.hendry/james-bruten-mo/jules
     ref:
 
 lfric_apps:
@@ -38,8 +38,8 @@ moci:
     ref: 2026.03.2
 
 SimSys_Scripts:
-    source: git@github.com:MetOffice/SimSys_Scripts.git
-    ref: 87bd2f5d9a25b7cafd695cdddc478b012d00774d
+    source: git@github.com:maggiehendry/SimSys_Scripts.git
+    ref: add_jules_path_to_validate_rose_meta
 
 socrates:
     source: git@github.com:MetOffice/socrates.git
