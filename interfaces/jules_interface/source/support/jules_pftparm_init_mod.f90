@@ -39,10 +39,13 @@ contains
        psi_open, q10_leaf, r_grow, rootd_ft, sigl, sox_a, sox_p50, sox_rp_min, &
        sug_g0, sug_grec, sug_yg, tef, tleaf_of, tlow, tupp, vint, vsl, z0v
 
+    use pftparm, only: pftparm_alloc, print_nlist_jules_pftparm,               &
+       check_jules_pftparm
+
     use jules_pftparm_nml_iterator_mod, only: jules_pftparm_nml_iterator_type
     use jules_pftparm_nml_mod,    only: jules_pftparm_nml_type
-    use jules_surface_types_mod,  only: npft, brd_leaf, ndl_leaf, c3_grass,    &
-       c4_grass, shrub
+    use jules_surface_types_mod,  only: npft, map_nml_instance_to_tile_number
+
 
     use log_mod, only: log_event, log_scratch_space, log_level_error
 
@@ -58,42 +61,15 @@ contains
 
     character(len=*), parameter :: RoutineName='JULES_PFTPARM_INIT'
 
+    call pftparm_alloc(npft)
+
     n = 0
     call iter%initialise( config%jules_pftparm )
     do while ( iter%has_next() )
       n = n + 1
       jules_pftparm => iter%next()
-      ! For now add mapping from instance to jules_surface_types
-      select case ( trim( jules_pftparm%pft_name_io() ) )
-      case ( 'brd_leaf' )
-        i = brd_leaf
-      case ( 'ndl_leaf' )
-        i = ndl_leaf
-      case ( 'c3_grass' )
-        i = c3_grass
-      case ( 'c4_grass' )
-        i = c4_grass
-      case ( 'shrub' )
-        i = shrub
-      case DEFAULT
-        write(log_scratch_space,'(A)')                                         &
-           'PFT name not recognised: ' // jules_pftparm%pft_name_io()
-        call log_event(                                                        &
-           RoutineName//': '//trim(log_scratch_space), log_level_error         &
-           )
-      end select
-
-      ! Range of specified types (1:npft) checked by check_jules_surface_types
-      if ( i < 1 ) then
-        write(log_scratch_space,'(A)')                                         &
-           'jules_pftparm and jules_surface_types inputs are inconsistent; '// &
-           trim(jules_pftparm%pft_name_io()) //                                &
-           ' is not specified in jules_surface_types'
-        call log_event(                                                        &
-           RoutineName//': '//trim(log_scratch_space), log_level_error         &
-           )
-      end if
-
+      i = map_nml_instance_to_tile_number ( 'jules_pftparm',                   &
+         jules_pftparm%pft_name_io() )
       ! c3_io would make more sense as a logical
       ! (see MetOffice/jules/issues/106)
       select case ( jules_pftparm%c3_io() )
@@ -234,6 +210,9 @@ contains
          RoutineName//': '//trim(log_scratch_space), log_level_error           &
          )
     end if
+
+    call print_nlist_jules_pftparm()
+    call check_jules_pftparm()
 
   end subroutine jules_pftparm_init
 

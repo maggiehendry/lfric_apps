@@ -57,7 +57,6 @@ module jules_physics_init_mod
   use jules_irrig_mod,          only: irrig_vars_alloc
   use metstats_mod,             only: metstats_allocate
   use nvegparm,                 only: nvegparm_alloc
-  use pftparm,                  only: pftparm_alloc
   use trif,                     only: trif_alloc
   use veg3_parm_mod,            only: veg3_parm_allocate
   use veg3_field_mod,           only: veg3_field_allocate
@@ -177,8 +176,6 @@ contains
          albsnc_nvg, albsnf_nvgu, albsnf_nvg, albsnf_nvgl, catch_nvg,       &
          ch_nvg, emis_nvg, gs_nvg, infil_nvg, vf_nvg, z0_nvg,               &
          check_jules_nvegparm, print_nlist_jules_nvegparm
-    use pftparm, only:                                                      &
-         print_nlist_jules_pftparm, check_jules_pftparm
     use jules_pftparm_init_mod, only: jules_pftparm_init
 
     use check_compatible_options_mod, only: check_compatible_options
@@ -595,8 +592,6 @@ contains
 
     call nvegparm_alloc(nnvg)
 
-    call pftparm_alloc(npft)
-
     call trif_alloc(npft, l_triffid, l_phenol)
 
     call veg3_parm_allocate(land_pts,nsurft,nnpft,npft)
@@ -651,12 +646,10 @@ contains
     ! Settings which are specified on all surface tiles at once
     ! - contained in module c_z0h_z0m
     ! ----------------------------------------------------------------
-    call print_nlist_jules_pftparm()
     call print_nlist_jules_nvegparm()
     call c_z0h_z0m_print()
 
     ! This routine checks that the options set are actually compatible
-    call check_jules_pftparm(npft,nnpft)
     call check_jules_nvegparm(nnvg)
     call c_z0h_z0m_check(ntype)
     call check_compatible_options()
