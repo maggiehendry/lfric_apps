@@ -31,3 +31,13 @@ class vnXX_txxx(MacroUpgrade):
         # Add settings
         return config, self.reports
 """
+
+class vn32_t154(MacroUpgrade):
+    # Upgrade macro for <TICKET> by Maggie Hendry
+
+    BEFORE_TAG = "vn3.2"
+    AFTER_TAG = "vn3.2_t154"
+
+    def upgrade(self, config, meta_config=None):
+        # Bump tag to pick up metadata changes
+        return config, self.reports
