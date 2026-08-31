@@ -32,11 +32,11 @@ class vnXX_txxx(MacroUpgrade):
         return config, self.reports
 """
 
-class vn32_t154(MacroUpgrade):
-    # Upgrade macro for <TICKET> by Maggie Hendry
+class vn32_t744(MacroUpgrade):
+    # Upgrade macro for #744 by Maggie Hendry
 
     BEFORE_TAG = "vn3.2"
-    AFTER_TAG = "vn3.2_t154"
+    AFTER_TAG = "vn3.2_t744"
 
     def upgrade(self, config, meta_config=None):
         # Bump tag to pick up metadata changes
