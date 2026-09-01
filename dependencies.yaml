@@ -22,8 +22,8 @@ casim:
     ref: 2026.07.1
 
 jules:
-    source: git@github.com:MetOffice/jules.git
-    ref: 2026.07.1
+    source: git@github.com:maggiehendry/jules.git
+    ref: 1b070cb8edd5850cc18a06e3d8d494233b193e99
 
 lfric_apps:
     source:
