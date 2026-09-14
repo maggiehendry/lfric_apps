@@ -31,3 +31,16 @@ class vnXX_txxx(MacroUpgrade):
         # Add settings
         return config, self.reports
 """
+
+
+class vn32_t775(MacroUpgrade):
+    """Upgrade macro for ticket None by None."""
+
+    BEFORE_TAG = "vn3.2"
+    AFTER_TAG = "vn3.2_t775"
+
+    def upgrade(self, config, meta_config=None):
+        # Commands From: rose-meta/jules-lsm
+        # Bump tag to pick up metadata changes
+
+        return config, self.reports
